@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HappyBin.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UpdateConfigUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:57575/updates/updateconfig.xml</Value>
+    </Setting>
+    <Setting Name="RuntimeExe" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">foopad.exe</Value>
+    </Setting>
+    <Setting Name="DownloadFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">patches</Value>
+    </Setting>
+    <Setting Name="WaitForExitMillseconds" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3000</Value>
+    </Setting>
+    <Setting Name="StartRuntimeExeAfterInstall" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

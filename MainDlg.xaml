@@ -1,0 +1,32 @@
+﻿<Window x:Class="HappyBin.AutoUpdater.MainDlg"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:HappyBin.AutoUpdater"
+        Title="Auto Update" Height="350" Width="525"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <local:BooleanToValueConverter x:Key="trueVisible" TrueValue="Visible" FalseValue="Collapsed" />
+        <local:BooleanToValueConverter x:Key="falseVisible" TrueValue="Collapsed" FalseValue="Visible" />
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Text="A mandatory update is available and ready to install.  Beginning installation now." Margin="5"
+                   Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=trueVisible}}"/>
+        <TextBlock Grid.Row="0" 
+                   Text="An update is available and ready to install.  Would you like to install now?" Margin="5"
+                   Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}"/>
+        <StackPanel Grid.Row="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right"
+                    Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}">
+            <Button Name="cmdNow" Content="Install Now" Click="cmdNow_Click" Margin="0,0,10,0" Width="100"/>
+            <Button Name="cmdCancel" Content="Later" Click="cmdCancel_Click" Width="100" />
+        </StackPanel>
+        <TextBox Grid.Row="2" Name="txtLog" AcceptsReturn="True" Margin="5" IsReadOnly="True"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+    </Grid>
+</Window>
