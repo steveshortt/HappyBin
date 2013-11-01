@@ -139,6 +139,7 @@ namespace HappyBin.AutoUpdater
 		public PatchStatus InitializePatchStatus()
 		{
 			PatchStatus result = new PatchStatus();
+			this.Status = result;
 
 			//assemble accurate path and file names, check for exe existence, bail if not present
 			RuntimeExeInfo rei = new RuntimeExeInfo( Properties.Settings.Default.RuntimeExe );
@@ -184,7 +185,6 @@ namespace HappyBin.AutoUpdater
 				}
 			}
 
-			this.Status = result;
 			return result;
 		}
 
