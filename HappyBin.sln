@@ -3,6 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyBin", "HappyBin.csproj", "{B906BEBA-9291-43DC-97FE-B0CBCF45675A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHappyBinSample", "..\Samples\WpfHappyBinSample\WpfHappyBinSample.csproj", "{D8C62D06-677D-4CE6-B897-8BBDB7F69031}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{CD3E6CA7-F06F-4902-A8DC-9441267D1693}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsHappyBinSample", "..\Samples\WinFormsHappyBinSample\WinFormsHappyBinSample.csproj", "{A50D410E-0251-4D3F-AB37-5819C5F4E2EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHappyBinSample", "..\Samples\ConsoleHappyBinSample\ConsoleHappyBinSample.csproj", "{92DC1ED2-2DE6-43B0-964B-BD63E2003721}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyBinCli", "..\Samples\HappyBinCli\HappyBinCli.csproj", "{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,8 +23,30 @@ Global
 		{B906BEBA-9291-43DC-97FE-B0CBCF45675A}.Debug|x86.Build.0 = Debug|x86
 		{B906BEBA-9291-43DC-97FE-B0CBCF45675A}.Release|x86.ActiveCfg = Release|x86
 		{B906BEBA-9291-43DC-97FE-B0CBCF45675A}.Release|x86.Build.0 = Release|x86
+		{D8C62D06-677D-4CE6-B897-8BBDB7F69031}.Debug|x86.ActiveCfg = Debug|x86
+		{D8C62D06-677D-4CE6-B897-8BBDB7F69031}.Debug|x86.Build.0 = Debug|x86
+		{D8C62D06-677D-4CE6-B897-8BBDB7F69031}.Release|x86.ActiveCfg = Release|x86
+		{D8C62D06-677D-4CE6-B897-8BBDB7F69031}.Release|x86.Build.0 = Release|x86
+		{A50D410E-0251-4D3F-AB37-5819C5F4E2EF}.Debug|x86.ActiveCfg = Debug|x86
+		{A50D410E-0251-4D3F-AB37-5819C5F4E2EF}.Debug|x86.Build.0 = Debug|x86
+		{A50D410E-0251-4D3F-AB37-5819C5F4E2EF}.Release|x86.ActiveCfg = Release|x86
+		{A50D410E-0251-4D3F-AB37-5819C5F4E2EF}.Release|x86.Build.0 = Release|x86
+		{92DC1ED2-2DE6-43B0-964B-BD63E2003721}.Debug|x86.ActiveCfg = Debug|x86
+		{92DC1ED2-2DE6-43B0-964B-BD63E2003721}.Debug|x86.Build.0 = Debug|x86
+		{92DC1ED2-2DE6-43B0-964B-BD63E2003721}.Release|x86.ActiveCfg = Release|x86
+		{92DC1ED2-2DE6-43B0-964B-BD63E2003721}.Release|x86.Build.0 = Release|x86
+		{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA}.Debug|x86.ActiveCfg = Debug|x86
+		{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA}.Debug|x86.Build.0 = Debug|x86
+		{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA}.Release|x86.ActiveCfg = Release|x86
+		{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D8C62D06-677D-4CE6-B897-8BBDB7F69031} = {CD3E6CA7-F06F-4902-A8DC-9441267D1693}
+		{A50D410E-0251-4D3F-AB37-5819C5F4E2EF} = {CD3E6CA7-F06F-4902-A8DC-9441267D1693}
+		{92DC1ED2-2DE6-43B0-964B-BD63E2003721} = {CD3E6CA7-F06F-4902-A8DC-9441267D1693}
+		{B3CCBDBF-36C9-4DA8-A6B7-DB16ABB274AA} = {CD3E6CA7-F06F-4902-A8DC-9441267D1693}
 	EndGlobalSection
 EndGlobal

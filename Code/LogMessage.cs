@@ -5,6 +5,7 @@ namespace HappyBin.AutoUpdater
 	public class LogMessage
 	{
 		string _message = null;
+		Exception _ex = null;
 
 		public LogMessage() { }
 		public LogMessage(string message)
@@ -14,6 +15,11 @@ namespace HappyBin.AutoUpdater
 		public LogMessage(string format, params object[] args)
 		{
 			this.Message = string.Format( format, args );
+		}
+		public LogMessage(string format, Exception ex, params object[] args)
+		{
+			this.Message = string.Format( format, args );
+			this.Exception = ex;
 		}
 
 		public string Message
@@ -30,5 +36,20 @@ namespace HappyBin.AutoUpdater
 		}
 
 		public DateTime TimeStamp { get; private set; }
+
+		public Exception Exception
+		{
+			get { return _ex; }
+			set
+			{
+				if( _ex != value )
+				{
+					_ex = value;
+					this.IsError = _ex != null;
+				}
+			}
+		}
+
+		public bool IsError { get; set; }
 	}
 }

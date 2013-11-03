@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Windows;
 using System.ComponentModel;
+using log4net;
 
 namespace HappyBin.AutoUpdater
 {
 	public partial class MainDlg : Window
 	{
 		Updater _updater = null;
+		static readonly ILog _log = LogManager.GetLogger( "HappyBinLog" );
 
 		public MainDlg(Updater updater)
 		{
@@ -49,7 +51,26 @@ namespace HappyBin.AutoUpdater
 			{
 				App.Current.Dispatcher.Invoke( (Action)delegate()
 				{
-					txtLog.AppendText( string.Format( "{0}\t{1}\r\n", _updater.LogMessage.TimeStamp, _updater.LogMessage.Message ) );
+					if( _updater.LogMessage.IsError )
+					{
+						txtLog.AppendText(
+							string.Format( "{0}\t{1}\r\n{2}\r\n",
+							_updater.LogMessage.TimeStamp, _updater.LogMessage.Message, _updater.LogMessage.Exception ) );
+
+						if( _log.IsErrorEnabled )
+						{
+							_log.Error( _updater.LogMessage.Message, _updater.LogMessage.Exception );
+						}
+					}
+					else
+					{
+						txtLog.AppendText( string.Format( "{0}\t{1}\r\n", _updater.LogMessage.TimeStamp, _updater.LogMessage.Message ) );
+
+						if( _log.IsInfoEnabled )
+						{
+							_log.Info( _updater.LogMessage.Message );
+						}
+					}
 				} );
 			}
 		}

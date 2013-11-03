@@ -16,11 +16,12 @@ namespace HappyBin.AutoUpdater
 			base.OnStartup( e );
 
 			this.Updater = new Updater();
+			MainDlg mainDlg = new MainDlg( this.Updater );
+
 			this.Updater.InitializePatchStatus();
 
 			if( this.Updater.Status.PatchFilePathExists )
 			{
-				MainDlg mainDlg = new MainDlg( this.Updater );
 				mainDlg.Show();
 			}
 			else

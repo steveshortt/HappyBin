@@ -113,11 +113,6 @@ namespace HappyBin.AutoUpdater
 				}
 			}
 		}
-
-		private void SetLogMessage(string format, params object[] args)
-		{
-			this.LogMessage = new LogMessage( format, args );
-		}
 		#endregion
 		#endregion
 
@@ -147,7 +142,7 @@ namespace HappyBin.AutoUpdater
 
 			if( !rei.Exists )
 			{
-				this.SetLogMessage( "Could not find file {0}; aborting.", rei.FullPath );
+				this.SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
 				return result;
 			}
 
@@ -220,7 +215,7 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed to retrieve config file: {0}.  Exception: {1}", configUri, ex );
+				this.SetLogMessage( "Failed to retrieve config file: {0}.", ex, configUri );
 			}
 
 			return uc;
@@ -321,7 +316,7 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed to retrieve config file: {0}.  Exception: {1}", patchUri, ex );
+				this.SetLogMessage( "Failed to retrieve config file: {0}.", ex, patchUri );
 			}
 
 			return ok;
@@ -369,7 +364,7 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed on call to: {0}.  Exception: {1}", uri, ex );
+				this.SetLogMessage( "Failed on call to: {0}.", ex, uri );
 				return null;
 			}
 		}
@@ -437,7 +432,7 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Could not file {0}.  Exception: {1}", file.FullName, ex );
+				this.SetLogMessage( "Could not remove file {0}.", ex, file.FullName );
 			}
 		}
 
@@ -450,8 +445,25 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Could not remove folder {0}.  Exception: {1}", dir.FullName, ex );
+				this.SetLogMessage( "Could not remove folder {0}.", ex, dir.FullName );
 			}
+		}
+
+		private void SetLogMessage(string format, params object[] args)
+		{
+			this.LogMessage = new LogMessage( format, args );
+		}
+
+		private void SetLogMessage(string format, bool isError, params object[] args)
+		{
+			LogMessage l = new LogMessage( format, args );
+			l.IsError = isError;
+			this.LogMessage = l;
+		}
+
+		private void SetLogMessage(string format, Exception ex, params object[] args)
+		{
+			this.LogMessage = new LogMessage( format, ex, args );
 		}
 		#endregion
 	}
