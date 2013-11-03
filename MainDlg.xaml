@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:HappyBin.AutoUpdater"
-        Title="HappyBin AutoUpdater" Height="350" Width="525"
+        Title="HappyBin AutoUpdater"
+        Width="525" SizeToContent="Height" MaxHeight="525"
         Loaded="Window_Loaded">
     <Window.Resources>
         <local:BooleanToValueConverter x:Key="trueVisible" TrueValue="Visible" FalseValue="Collapsed" />
@@ -26,7 +27,11 @@
             <Button Name="cmdNow" Content="Install Now" Click="cmdNow_Click" Margin="0,0,10,0" Width="100"/>
             <Button Name="cmdCancel" Content="Later" Click="cmdCancel_Click" Width="100" />
         </StackPanel>
+
+        <CheckBox Grid.Row="2" Name="chkShowLogDetail" Content="Show Log Detail" Margin="5"
+                  Visibility="{Binding IsChecked, ElementName=chkShowLogDetail, Converter={StaticResource ResourceKey=falseVisible}}"/>
         <TextBox Grid.Row="2" Name="txtLog" AcceptsReturn="True" Margin="5" IsReadOnly="True"
-                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 Visibility="{Binding IsChecked, ElementName=chkShowLogDetail, Converter={StaticResource ResourceKey=trueVisible}}" />
     </Grid>
 </Window>
