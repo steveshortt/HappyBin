@@ -60,6 +60,7 @@ namespace HappyBin.AutoUpdater
 		string _downloadFileName = string.Empty;
 		int _downloadBytes = 0;
 		LogMessage _logMessage = new LogMessage();
+		bool _isAboutBox = false;
 
 		public PatchStatus Status
 		{
@@ -113,6 +114,22 @@ namespace HappyBin.AutoUpdater
 				}
 			}
 		}
+
+		//hack: this has nothing to do with the updater.  it's just for the ui.
+		public bool IsAboutBox
+		{
+			get { return _isAboutBox; }
+			set
+			{
+				if( _isAboutBox != value )
+				{
+					_isAboutBox = value;
+
+					this.OnPropertyChanged( "IsAboutBox" );
+				}
+			}
+		}
+
 		#endregion
 		#endregion
 

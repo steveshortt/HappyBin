@@ -9,25 +9,38 @@ namespace HappyBin.AutoUpdater
 {
 	public partial class App : Application
 	{
-		public Updater Updater { get; private set; }
+		public static Updater Updater { get; private set; }
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup( e );
 
-			this.Updater = new Updater();
-			MainDlg mainDlg = new MainDlg( this.Updater );
+			Updater = new Updater();
+			MainDlg mainDlg = new MainDlg();
 
-			this.Updater.InitializePatchStatus();
-
-			if( this.Updater.Status.PatchFilePathExists )
+			Updater.IsAboutBox = false;
+			if( e.Args.Length > 0 )
 			{
-				mainDlg.Show();
+				Updater.IsAboutBox = e.Args[0].ToLower() == "/about";
+			}
+
+			if( !Updater.IsAboutBox )
+			{
+				Updater.InitializePatchStatus();
+
+				if( Updater.Status.PatchFilePathExists )
+				{
+					mainDlg.Show();
+				}
+				else
+				{
+					Updater = null;
+					App.Current.Shutdown();
+				}
 			}
 			else
 			{
-				this.Updater = null;
-				App.Current.Shutdown();
+				mainDlg.Show();
 			}
 		}
 	}
