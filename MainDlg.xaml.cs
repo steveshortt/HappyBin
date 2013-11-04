@@ -10,12 +10,13 @@ namespace HappyBin.AutoUpdater
 		Updater _updater = null;
 		static readonly ILog _log = LogManager.GetLogger( "HappyBinLog" );
 
-		public MainDlg(Updater updater)
+		public MainDlg()
 		{
 			InitializeComponent();
 
-			_updater = updater;
+			_updater = App.Updater;
 			_updater.PropertyChanged += updater_PropertyChanged;
+
 			this.DataContext = _updater;
 		}
 
@@ -73,6 +74,13 @@ namespace HappyBin.AutoUpdater
 					}
 				} );
 			}
+			else if( e.PropertyName == "DownloadBytes" )
+			{
+				App.Current.Dispatcher.Invoke( (Action)delegate()
+				{
+					txtBytes.Text = _updater.DownloadBytes.ToString();
+				} );
+			}
 		}
 
 		private void cmdNow_Click(object sender, RoutedEventArgs e)
@@ -84,5 +92,34 @@ namespace HappyBin.AutoUpdater
 		{
 			App.Current.Shutdown();
 		}
+
+
+		private void cmdCheckForUpdates_Click(object sender, RoutedEventArgs e)
+		{
+			this.InitializePatchStatusAsync();
+		}
+
+		void InitializePatchStatusAsync()
+		{
+			BackgroundWorker w = new BackgroundWorker();
+
+			w.DoWork += (s, v) =>
+			{
+				_updater.InitializePatchStatus();
+			};
+
+			w.RunWorkerCompleted += (s, v) =>
+			{
+				if( _updater.Status.PatchFilePathExists )
+				{
+					this.DataContext = null;
+					this.DataContext = _updater;
+					_updater.IsAboutBox = false;
+				}
+			};
+
+			w.RunWorkerAsync();
+		}
+
 	}
 }
