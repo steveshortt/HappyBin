@@ -115,11 +115,15 @@ namespace HappyBin.AutoUpdater
 					this.DataContext = null;
 					this.DataContext = _updater;
 					_updater.IsAboutBox = false;
+
+					if( _updater.Status.PatchIsMandatory )
+					{
+						this.InstallPatchesAsync();
+					}
 				}
 			};
 
 			w.RunWorkerAsync();
 		}
-
 	}
 }
