@@ -13,6 +13,8 @@ namespace HappyBin.AutoUpdater
 {
 	public class Updater : INotifyPropertyChanged
 	{
+		const string __uriSchemeHttp = "http";
+		const string __uriSchemeFtp = "ftp";
 		const string __purgeListFileName = "purge.txt";
 
 		#region friendly ui stuff
@@ -215,17 +217,32 @@ namespace HappyBin.AutoUpdater
 
 				if( configUri.IsUnc )
 				{
-					this.SetLogMessage( "Getting config from {0}", configUri.LocalPath );
+					this.SetLogMessage( "Getting config via unc from {0}", configUri.LocalPath );
 					xmlDoc.Load( configUri.LocalPath );
 				}
-				else
+				else if( configUri.Scheme == __uriSchemeHttp )
 				{
-					this.SetLogMessage( "Getting config from {0}", configUri.AbsoluteUri );
-					Stream respStream = this.WebRequestSync( configUri.AbsoluteUri );
+					this.SetLogMessage( "Getting config via http from {0}", configUri.AbsoluteUri );
+					Stream respStream = this.HttpRequestSync( configUri.AbsoluteUri );
 					if( respStream != null )
 					{
 						xmlDoc.Load( respStream );
+						respStream.Close();
 					}
+				}
+				else if( configUri.Scheme == __uriSchemeFtp )
+				{
+					this.SetLogMessage( "Getting file via ftp from {0}", configUri.AbsoluteUri );
+					Stream respStream = this.FtpRequestSync( configUri.AbsoluteUri );
+					if( respStream != null )
+					{
+						xmlDoc.Load( respStream );
+						respStream.Close();
+					}
+				}
+				else
+				{
+					throw new UriFormatException( "Unknown Uri format" );
 				}
 
 				uc = UpdateConfig.Deserialize( new StringReader( xmlDoc.OuterXml ) );
@@ -317,18 +334,34 @@ namespace HappyBin.AutoUpdater
 			{
 				if( patchUri.IsUnc )
 				{
-					this.SetLogMessage( "Getting file from {0}", patchUri.LocalPath );
+					this.SetLogMessage( "Getting file via unc from {0}", patchUri.LocalPath );
 					File.Copy( patchUri.LocalPath, destination );
 				}
-				else
+				else if( patchUri.Scheme == __uriSchemeHttp )
 				{
-					this.SetLogMessage( "Getting file from {0}", patchUri.AbsoluteUri );
-					Stream respStream = this.WebRequestSync( patchUri.AbsoluteUri );
+					this.SetLogMessage( "Getting file via http from {0}", patchUri.AbsoluteUri );
+					Stream respStream = this.HttpRequestSync( patchUri.AbsoluteUri );
 					if( respStream != null )
 					{
 						this.WriteFile( respStream, destination );
+						respStream.Close();
 					}
 				}
+				else if( patchUri.Scheme == __uriSchemeFtp )
+				{
+					this.SetLogMessage( "Getting file via ftp from {0}", patchUri.AbsoluteUri );
+					Stream respStream = this.FtpRequestSync( patchUri.AbsoluteUri );
+					if( respStream != null )
+					{
+						this.WriteFile( respStream, destination );
+						respStream.Close();
+					}
+				}
+				else
+				{
+					throw new UriFormatException( "Unknown Uri format" );
+				}
+
 				ok = true;
 			}
 			catch( Exception ex )
@@ -363,25 +396,49 @@ namespace HappyBin.AutoUpdater
 			}
 		}
 
-		private Stream WebRequestSync(string uri)
+		private Stream HttpRequestSync(string uri)
 		{
 			try
 			{
 				this.DownloadFileName = uri;
-				this.SetLogMessage( "Downloading file: {0}", uri );
+				this.SetLogMessage( "Downloading file via http: {0}", uri );
 
 				HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create( uri );
 				req.Credentials = CredentialCache.DefaultCredentials;
 				HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
 				this.OnDownloadCompleted( uri );
-				this.SetLogMessage( "Download file complete: {0}", uri );
+				this.SetLogMessage( "Download file via http  complete: {0}", uri );
 
 				return resp.GetResponseStream();
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed on call to: {0}.", ex, uri );
+				this.SetLogMessage( "Failed on http call to: {0}.", ex, uri );
+				return null;
+			}
+		}
+
+		private Stream FtpRequestSync(string uri)
+		{
+			try
+			{
+				this.DownloadFileName = uri;
+				this.SetLogMessage( "Downloading file via ftp: {0}", uri );
+
+				FtpWebRequest req = (FtpWebRequest)WebRequest.Create( uri );
+				req.Method = WebRequestMethods.Ftp.DownloadFile;
+				req.Credentials = CredentialCache.DefaultCredentials;
+				FtpWebResponse resp = (FtpWebResponse)req.GetResponse();
+
+				this.OnDownloadCompleted( uri );
+				this.SetLogMessage( "Download file via ftp complete: {0}", uri );
+
+				return resp.GetResponseStream();
+			}
+			catch( Exception ex )
+			{
+				this.SetLogMessage( "Failed on ftp call to: {0}.", ex, uri );
 				return null;
 			}
 		}
