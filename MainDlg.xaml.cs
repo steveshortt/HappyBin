@@ -121,6 +121,10 @@ namespace HappyBin.AutoUpdater
 						this.InstallPatchesAsync();
 					}
 				}
+				else
+				{
+					txtBytes.Text = "No updates availble.";
+				}
 			};
 
 			w.RunWorkerAsync();
