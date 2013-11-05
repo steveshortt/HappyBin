@@ -14,7 +14,20 @@ namespace HappyBin.AutoUpdater
 		[XmlElement()]
 		public string CurrentVersion { get; set; }
 		[XmlIgnore()]
-		public Version CurrVer { get { return new Version( this.CurrentVersion ); } }
+		public Version CurrVer
+		{
+			get
+			{
+				if( string.IsNullOrWhiteSpace( this.CurrentVersion ) )
+				{
+					return new Version( 0, 0, 0, 0 );
+				}
+				else
+				{
+					return new Version( this.CurrentVersion );
+				}
+			}
+		}
 		[XmlElement()]
 		public bool IsMandatory { get; set; }
 		[XmlElement()]
