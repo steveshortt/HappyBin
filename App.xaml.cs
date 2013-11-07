@@ -28,7 +28,7 @@ namespace HappyBin.AutoUpdater
 			{
 				Updater.InitializePatchStatus();
 
-				if( Updater.Status.PatchFilePathExists )
+				if( Updater.Status.PatchIsValid )
 				{
 					mainDlg.Show();
 				}

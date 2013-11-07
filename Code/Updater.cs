@@ -141,7 +141,7 @@ namespace HappyBin.AutoUpdater
 			PatchStatus result = this.InitializePatchStatus();
 
 			//run it if required
-			if( result.PatchFilePathExists && result.PatchIsMandatory )
+			if( result.PatchIsValid && result.PatchIsMandatory )
 			{
 				this.InstallExistingPatches( result.ExeInfo.FullPath, result.ExeInfo.FolderPath );
 			}
@@ -169,9 +169,15 @@ namespace HappyBin.AutoUpdater
 			UpdateConfig uc = this.LoadConfig();
 			result.PatchIsMandatory = uc.IsMandatory;
 
-			if( uc.CurrVer > rei.Version )
+			if( uc.CurrentVer > rei.Version )
 			{
 				this.SetLogMessage( "Current version is {0}, getting new version: {1}", rei.Version, uc.CurrentVersion );
+
+				if( uc.LastMandatoryVer > rei.Version )
+				{
+					result.PatchIsMandatory = uc.IsMandatory;
+					this.SetLogMessage( "Current patch is Mandatory due to version age: {0} / {1}", rei.Version, uc.LastMandatoryVer );
+				}
 
 				#region ensure patch folders exist
 				string downloadFolderRoot = Properties.Settings.Default.DownloadFolder;
@@ -192,10 +198,10 @@ namespace HappyBin.AutoUpdater
 
 				//download/copy the patch file
 				string patchFilePath = Path.Combine( patchFolder, fileName );
-				result.PatchFilePathExists = File.Exists( patchFilePath );
-				if( !result.PatchFilePathExists )
+				result.PatchIsValid = this.PatchFileIsValid( patchFilePath, uc.PatchSizeBytes );
+				if( !result.PatchIsValid )
 				{
-					result.PatchFilePathExists = this.GetPatchFile( patchUri, patchFilePath );
+					result.PatchIsValid = this.GetPatchFile( patchUri, patchFilePath, uc.PatchSizeBytes );
 				}
 			}
 
@@ -327,9 +333,8 @@ namespace HappyBin.AutoUpdater
 		/// <param name="patchUri">Patch file source Uri</param>
 		/// <param name="destination">Patch file local destination folder/file name</param>
 		/// <returns></returns>
-		private bool GetPatchFile(Uri patchUri, string destination)
+		private bool GetPatchFile(Uri patchUri, string destination, long patchSizeBytes)
 		{
-			bool ok = false;
 			try
 			{
 				if( patchUri.IsUnc )
@@ -361,15 +366,25 @@ namespace HappyBin.AutoUpdater
 				{
 					throw new UriFormatException( "Unknown Uri format" );
 				}
-
-				ok = true;
 			}
 			catch( Exception ex )
 			{
 				this.SetLogMessage( "Failed to retrieve config file: {0}.", ex, patchUri );
 			}
 
-			return ok;
+			return this.PatchFileIsValid( destination, patchSizeBytes );
+		}
+
+		private bool PatchFileIsValid(string patchFilePath, long patchSizeBytes)
+		{
+			FileInfo fi = new FileInfo( patchFilePath );
+			bool isValid = fi.Exists && fi.Length == patchSizeBytes;
+			if( !isValid )
+			{
+				this.TryDeleteFile( fi );
+			}
+
+			return isValid;
 		}
 
 		/// <summary>
