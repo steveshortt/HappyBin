@@ -14,7 +14,7 @@ namespace HappyBin.AutoUpdater
 		[XmlElement()]
 		public string CurrentVersion { get; set; }
 		[XmlIgnore()]
-		public Version CurrVer
+		public Version CurrentVer
 		{
 			get
 			{
@@ -28,10 +28,31 @@ namespace HappyBin.AutoUpdater
 				}
 			}
 		}
+
+		[XmlElement()]
+		public string LastMandatoryVersion { get; set; }
+		[XmlIgnore()]
+		public Version LastMandatoryVer
+		{
+			get
+			{
+				if( string.IsNullOrWhiteSpace( this.LastMandatoryVersion ) )
+				{
+					return new Version( 0, 0, 0, 0 );
+				}
+				else
+				{
+					return new Version( this.LastMandatoryVersion );
+				}
+			}
+		}
+
 		[XmlElement()]
 		public bool IsMandatory { get; set; }
 		[XmlElement()]
 		public string PatchUri { get; set; }
+		[XmlElement()]
+		public long PatchSizeBytes { get; set; }
 
 
 		public void Serialize(string filePath)

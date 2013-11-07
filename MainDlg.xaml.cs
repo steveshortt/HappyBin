@@ -110,7 +110,7 @@ namespace HappyBin.AutoUpdater
 
 			w.RunWorkerCompleted += (s, v) =>
 			{
-				if( _updater.Status.PatchFilePathExists )
+				if( _updater.Status.PatchIsValid )
 				{
 					this.DataContext = null;
 					this.DataContext = _updater;
