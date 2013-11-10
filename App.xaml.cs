@@ -9,6 +9,8 @@ namespace HappyBin.AutoUpdater
 {
 	public partial class App : Application
 	{
+		MainDlg _mainDlg = null;
+
 		public static Updater Updater { get; private set; }
 
 		protected override void OnStartup(StartupEventArgs e)
@@ -16,31 +18,51 @@ namespace HappyBin.AutoUpdater
 			base.OnStartup( e );
 
 			Updater = new Updater();
-			MainDlg mainDlg = new MainDlg();
+			_mainDlg = new MainDlg();
 
-			Updater.IsAboutBox = false;
+			Updater.IsAboutBox = false;  //just being explicit
 			if( e.Args.Length > 0 )
 			{
-				Updater.IsAboutBox = e.Args[0].ToLower() == "/about";
-			}
+				string arg = e.Args[0].ToLower();
 
-			if( !Updater.IsAboutBox )
-			{
-				Updater.InitializePatchStatus();
-
-				if( Updater.Status.PatchIsValid )
+				if( arg == "/install" )
 				{
-					mainDlg.Show();
+					this.InstallPatchesAndExit();
 				}
 				else
 				{
-					Updater = null;
-					App.Current.Shutdown();
+					Updater.IsAboutBox = arg == "/about";
 				}
+			}
+
+			if( Updater.IsAboutBox )
+			{
+				_mainDlg.Show();
 			}
 			else
 			{
-				mainDlg.Show();
+				this.CheckForPatches();
+			}
+		}
+
+		private void InstallPatchesAndExit()
+		{
+			_mainDlg.Show();
+			_mainDlg.InstallExistingPatchesAsync();
+		}
+
+		private void CheckForPatches()
+		{
+			Updater.InitializePatchStatus();
+
+			if( Updater.Status.PatchIsValid )
+			{
+				_mainDlg.Show();
+			}
+			else
+			{
+				Updater = null;
+				App.Current.Shutdown();
 			}
 		}
 	}
