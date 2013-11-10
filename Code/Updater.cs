@@ -58,7 +58,7 @@ namespace HappyBin.AutoUpdater
 		#endregion
 
 		#region public properties
-		PatchStatus _status = null;
+		PatchStatus _status = new PatchStatus();
 		string _downloadFileName = string.Empty;
 		int _downloadBytes = 0;
 		LogMessage _logMessage = new LogMessage();
@@ -175,7 +175,7 @@ namespace HappyBin.AutoUpdater
 
 				if( uc.LastMandatoryVer > rei.Version )
 				{
-					result.PatchIsMandatory = uc.IsMandatory;
+					result.PatchIsMandatory = true;
 					this.SetLogMessage( "Current patch is Mandatory due to version age: {0} / {1}", rei.Version, uc.LastMandatoryVer );
 				}
 
@@ -259,6 +259,25 @@ namespace HappyBin.AutoUpdater
 			}
 
 			return uc;
+		}
+
+		/// <summary>
+		/// Helper method for InstallExistingPatches(string processName, string rootUnzipPath) that uses default pathing
+		/// </summary>
+		public void InstallExistingPatches()
+		{
+			//assemble accurate path and file names, check for exe existence, bail if not present
+			RuntimeExeInfo rei = new RuntimeExeInfo( Properties.Settings.Default.RuntimeExe );
+
+			if( !rei.Exists )
+			{
+				this.SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
+			}
+			else
+			{
+				this.SetLogMessage( "Starting installation of existing patches." );
+				this.InstallExistingPatches( rei.FullPath, rei.FolderPath );
+			}
 		}
 
 		/// <summary>

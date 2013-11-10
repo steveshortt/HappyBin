@@ -112,8 +112,6 @@ namespace HappyBin.AutoUpdater
 			{
 				if( _updater.Status.PatchIsValid )
 				{
-					this.DataContext = null;
-					this.DataContext = _updater;
 					_updater.IsAboutBox = false;
 
 					if( _updater.Status.PatchIsMandatory )
@@ -129,5 +127,26 @@ namespace HappyBin.AutoUpdater
 
 			w.RunWorkerAsync();
 		}
+
+		public void InstallExistingPatchesAsync()
+		{
+			BackgroundWorker w = new BackgroundWorker();
+
+			w.DoWork += (s, v) =>
+			{
+				_updater.InstallExistingPatches();
+			};
+
+			w.RunWorkerCompleted += (s, v) =>
+			{
+				System.Threading.Thread.Sleep( 3000 );
+				App.Current.Shutdown();
+			};
+
+			pnlButtons.Visibility = Visibility.Collapsed;
+			txtMsg.Text = "Installing existing patches.";
+			w.RunWorkerAsync();
+		}
+
 	}
 }

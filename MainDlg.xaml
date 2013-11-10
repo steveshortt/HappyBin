@@ -50,10 +50,10 @@
             <TextBlock Grid.Row="0"
                        Text="A mandatory update is available and ready to install.  Beginning installation now." Margin="5"
                        Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=trueVisible}}"/>
-            <TextBlock Grid.Row="0"
+            <TextBlock Grid.Row="0" Name="txtMsg"
                        Text="An update is available and ready to install.  Would you like to install now?" Margin="5"
                        Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}"/>
-            <StackPanel Grid.Row="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right"
+            <StackPanel Grid.Row="1" Name="pnlButtons" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right"
                         Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}">
                 <Button Name="cmdNow" Content="Install Now" Click="cmdNow_Click" Margin="0,0,10,0" Width="100"/>
                 <Button Name="cmdCancel" Content="Later" Click="cmdCancel_Click" Width="100" />
