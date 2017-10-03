@@ -33,7 +33,7 @@
                        Text="HappyBin is an auto-updater for .NET apps. It is designed as an api, and can be used as a boot-strap or a passive updater. Every app deserves a HappyBin!" />
             <ToggleButton Grid.Row="2" Grid.Column="1" Name="cmdCheckForUpdates" Content="Check for Updates"
                           Margin="5" Width="150" HorizontalAlignment="Left"
-                          Click="cmdCheckForUpdates_Click"
+                          Click="CmdCheckForUpdates_Click"
                           Visibility="{Binding IsChecked, ElementName=cmdCheckForUpdates, Converter={StaticResource ResourceKey=falseVisible}}"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Name="txtBytes" Text="{Binding DownloadBytes}" Margin="5"
                        Visibility="{Binding IsChecked, ElementName=cmdCheckForUpdates, Converter={StaticResource ResourceKey=trueVisible}}"/>
@@ -55,8 +55,8 @@
                        Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}"/>
             <StackPanel Grid.Row="1" Name="pnlButtons" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right"
                         Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}">
-                <Button Name="cmdNow" Content="Install Now" Click="cmdNow_Click" Margin="0,0,10,0" Width="100"/>
-                <Button Name="cmdCancel" Content="Later" Click="cmdCancel_Click" Width="100" />
+                <Button Name="cmdNow" Content="Install Now" Click="CmdNow_Click" Margin="0,0,10,0" Width="100"/>
+                <Button Name="cmdCancel" Content="Later" Click="CmdCancel_Click" Width="100" />
             </StackPanel>
 
             <CheckBox Grid.Row="2" Name="chkShowLogDetail" Content="Show Log Detail" Margin="5"

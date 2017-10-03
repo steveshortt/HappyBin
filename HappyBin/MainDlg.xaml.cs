@@ -15,7 +15,7 @@ namespace HappyBin.AutoUpdater
 			InitializeComponent();
 
 			_updater = App.Updater;
-			_updater.PropertyChanged += updater_PropertyChanged;
+			_updater.PropertyChanged += Updater_PropertyChanged;
 
 			this.DataContext = _updater;
 		}
@@ -46,7 +46,7 @@ namespace HappyBin.AutoUpdater
 			w.RunWorkerAsync();
 		}
 
-		void updater_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void Updater_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if( e.PropertyName == "LogMessage" )
 			{
@@ -83,18 +83,18 @@ namespace HappyBin.AutoUpdater
 			}
 		}
 
-		private void cmdNow_Click(object sender, RoutedEventArgs e)
+		private void CmdNow_Click(object sender, RoutedEventArgs e)
 		{
 			this.InstallPatchesAsync();
 		}
 
-		private void cmdCancel_Click(object sender, RoutedEventArgs e)
+		private void CmdCancel_Click(object sender, RoutedEventArgs e)
 		{
 			App.Current.Shutdown();
 		}
 
 
-		private void cmdCheckForUpdates_Click(object sender, RoutedEventArgs e)
+		private void CmdCheckForUpdates_Click(object sender, RoutedEventArgs e)
 		{
 			this.InitializePatchStatusAsync();
 		}

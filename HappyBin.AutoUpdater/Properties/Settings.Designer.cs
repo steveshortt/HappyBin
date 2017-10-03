@@ -25,7 +25,7 @@ namespace HappyBin.AutoUpdater.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:57575/updates/updateconfig.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string UpdateConfigUri {
             get {
                 return ((string)(this["UpdateConfigUri"]));
@@ -34,7 +34,7 @@ namespace HappyBin.AutoUpdater.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("foopad.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string RuntimeExe {
             get {
                 return ((string)(this["RuntimeExe"]));
@@ -61,7 +61,7 @@ namespace HappyBin.AutoUpdater.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool StartRuntimeExeAfterInstall {
             get {
                 return ((bool)(this["StartRuntimeExeAfterInstall"]));

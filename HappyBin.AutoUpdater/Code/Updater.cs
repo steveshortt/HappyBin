@@ -26,35 +26,23 @@ namespace HappyBin.AutoUpdater
 
 		protected virtual void OnPropertyChanged(string propertyName)
 		{
-			if( PropertyChanged != null )
-			{
-				PropertyChanged( this, new PropertyChangedEventArgs( propertyName ) );
-			}
-		}
+            PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+        }
 
 		protected virtual void OnDownloadCompleted(string fileName)
 		{
-			if( DownloadCompleted != null )
-			{
-				DownloadCompleted( this, new EventArgs<string>( fileName ) );
-			}
-		}
+            DownloadCompleted?.Invoke( this, new EventArgs<string>( fileName ) );
+        }
 
 		protected virtual void OnUnzipFileCompleted(string fileName)
 		{
-			if( UnzipFileCompleted != null )
-			{
-				UnzipFileCompleted( this, new EventArgs<string>( fileName ) );
-			}
-		}
+            UnzipFileCompleted?.Invoke( this, new EventArgs<string>( fileName ) );
+        }
 
 		protected virtual void OnUnzipCompleted(string fileName)
 		{
-			if( UnzipCompleted != null )
-			{
-				UnzipCompleted( this, new EventArgs<string>( fileName ) );
-			}
-		}
+            UnzipCompleted?.Invoke( this, new EventArgs<string>( fileName ) );
+        }
 		#endregion
 
 		#region public properties
