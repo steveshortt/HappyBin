@@ -1,0 +1,69 @@
+﻿<Window x:Class="HappyBin.AutoUpdater.MainDlg"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:HappyBin.AutoUpdater"
+        Title="HappyBin AutoUpdater"
+        Width="525" SizeToContent="Height" MaxHeight="525"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <local:BooleanToValueConverter x:Key="trueVisible" TrueValue="Visible" FalseValue="Collapsed" />
+        <local:BooleanToValueConverter x:Key="falseVisible" TrueValue="Collapsed" FalseValue="Visible" />
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Visibility="{Binding IsAboutBox, Converter={StaticResource ResourceKey=trueVisible}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Row="0" Grid.Column="0" Height="32" Width="32" Source="happybin.ico" Margin="25,0,25,0" />
+
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="HappyBin AutoUpdater" Margin="5" FontSize="32" />
+            <TextBlock Grid.Row="1" Grid.Column="1" MaxWidth="350" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5"
+                       Text="HappyBin is an auto-updater for .NET apps. It is designed as an api, and can be used as a boot-strap or a passive updater. Every app deserves a HappyBin!" />
+            <ToggleButton Grid.Row="2" Grid.Column="1" Name="cmdCheckForUpdates" Content="Check for Updates"
+                          Margin="5" Width="150" HorizontalAlignment="Left"
+                          Click="cmdCheckForUpdates_Click"
+                          Visibility="{Binding IsChecked, ElementName=cmdCheckForUpdates, Converter={StaticResource ResourceKey=falseVisible}}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Name="txtBytes" Text="{Binding DownloadBytes}" Margin="5"
+                       Visibility="{Binding IsChecked, ElementName=cmdCheckForUpdates, Converter={StaticResource ResourceKey=trueVisible}}"/>
+        </Grid>
+
+
+        <Grid Visibility="{Binding IsAboutBox, Converter={StaticResource ResourceKey=falseVisible}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="A mandatory update is available and ready to install.  Beginning installation now." Margin="5"
+                       Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=trueVisible}}"/>
+            <TextBlock Grid.Row="0" Name="txtMsg"
+                       Text="An update is available and ready to install.  Would you like to install now?" Margin="5"
+                       Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}"/>
+            <StackPanel Grid.Row="1" Name="pnlButtons" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right"
+                        Visibility="{Binding Status.PatchIsMandatory, Converter={StaticResource ResourceKey=falseVisible}}">
+                <Button Name="cmdNow" Content="Install Now" Click="cmdNow_Click" Margin="0,0,10,0" Width="100"/>
+                <Button Name="cmdCancel" Content="Later" Click="cmdCancel_Click" Width="100" />
+            </StackPanel>
+
+            <CheckBox Grid.Row="2" Name="chkShowLogDetail" Content="Show Log Detail" Margin="5"
+                      Visibility="{Binding IsChecked, ElementName=chkShowLogDetail, Converter={StaticResource ResourceKey=falseVisible}}"/>
+            <TextBox Grid.Row="2" Name="txtLog" AcceptsReturn="True" Margin="5" IsReadOnly="True"
+                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                     Visibility="{Binding IsChecked, ElementName=chkShowLogDetail, Converter={StaticResource ResourceKey=trueVisible}}" />
+        </Grid>
+    </Grid>
+</Window>
