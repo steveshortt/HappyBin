@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Xml;
 
-using ICSharpCode.SharpZipLib.Zip;
+//using ICSharpCode.SharpZipLib.Zip;
 
 
 namespace HappyBin.AutoUpdater
@@ -60,7 +61,7 @@ namespace HappyBin.AutoUpdater
 				if( _status != value )
 				{
 					_status = value;
-					this.OnPropertyChanged( "PatchStatus" );
+					OnPropertyChanged( "PatchStatus" );
 				}
 			}
 		}
@@ -73,7 +74,7 @@ namespace HappyBin.AutoUpdater
 				if( _downloadFileName != value )
 				{
 					_downloadFileName = value;
-					this.OnPropertyChanged( "DownloadFileName" );
+					OnPropertyChanged( "DownloadFileName" );
 				}
 			}
 		}
@@ -86,7 +87,7 @@ namespace HappyBin.AutoUpdater
 				if( _downloadBytes != value )
 				{
 					_downloadBytes = value;
-					this.OnPropertyChanged( "DownloadBytes" );
+					OnPropertyChanged( "DownloadBytes" );
 				}
 			}
 		}
@@ -100,7 +101,7 @@ namespace HappyBin.AutoUpdater
 				{
 					_logMessage = value;
 
-					this.OnPropertyChanged( "LogMessage" );
+					OnPropertyChanged( "LogMessage" );
 				}
 			}
 		}
@@ -115,7 +116,7 @@ namespace HappyBin.AutoUpdater
 				{
 					_isAboutBox = value;
 
-					this.OnPropertyChanged( "IsAboutBox" );
+					OnPropertyChanged( "IsAboutBox" );
 				}
 			}
 		}
@@ -126,12 +127,12 @@ namespace HappyBin.AutoUpdater
 		#region public methods
 		public void CompareDownloadInstall()
 		{
-			PatchStatus result = this.InitializePatchStatus();
+			PatchStatus result = InitializePatchStatus();
 
 			//run it if required
 			if( result.PatchIsValid && result.PatchIsMandatory )
 			{
-				this.InstallExistingPatches( result.ExeInfo.FullPath, result.ExeInfo.FolderPath );
+				InstallExistingPatches( result.ExeInfo.FullPath, result.ExeInfo.FolderPath );
 			}
 		}
 
@@ -141,7 +142,7 @@ namespace HappyBin.AutoUpdater
 		public PatchStatus InitializePatchStatus()
 		{
 			PatchStatus result = new PatchStatus();
-			this.Status = result;
+			Status = result;
 
 			//assemble accurate path and file names, check for exe existence, bail if not present
 			RuntimeExeInfo rei = new RuntimeExeInfo( Properties.Settings.Default.RuntimeExe );
@@ -149,22 +150,22 @@ namespace HappyBin.AutoUpdater
 
 			if( !rei.Exists )
 			{
-				this.SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
+				SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
 				return result;
 			}
 
 			//this will always return a valid config, but it will be empty on load failure (CurrVer = 0.0.0.0)
-			UpdateConfig uc = this.LoadConfig();
+			UpdateConfig uc = LoadConfig();
 			result.PatchIsMandatory = uc.IsMandatory;
 
 			if( uc.CurrentVer > rei.Version )
 			{
-				this.SetLogMessage( "Current version is {0}, getting new version: {1}", rei.Version, uc.CurrentVersion );
+				SetLogMessage( "Current version is {0}, getting new version: {1}", rei.Version, uc.CurrentVersion );
 
 				if( uc.LastMandatoryVer > rei.Version )
 				{
 					result.PatchIsMandatory = true;
-					this.SetLogMessage( "Current patch is Mandatory due to version age: {0} / {1}", rei.Version, uc.LastMandatoryVer );
+					SetLogMessage( "Current patch is Mandatory due to version age: {0} / {1}", rei.Version, uc.LastMandatoryVer );
 				}
 
 				#region ensure patch folders exist
@@ -186,10 +187,10 @@ namespace HappyBin.AutoUpdater
 
 				//download/copy the patch file
 				string patchFilePath = Path.Combine( patchFolder, fileName );
-				result.PatchIsValid = this.PatchFileIsValid( patchFilePath, uc.PatchSizeBytes );
+				result.PatchIsValid = PatchFileIsValid( patchFilePath, uc.PatchSizeBytes );
 				if( !result.PatchIsValid )
 				{
-					result.PatchIsValid = this.GetPatchFile( patchUri, patchFilePath, uc.PatchSizeBytes );
+					result.PatchIsValid = GetPatchFile( patchUri, patchFilePath, uc.PatchSizeBytes );
 				}
 			}
 
@@ -211,13 +212,13 @@ namespace HappyBin.AutoUpdater
 
 				if( configUri.IsUnc )
 				{
-					this.SetLogMessage( "Getting config via unc from {0}", configUri.LocalPath );
+					SetLogMessage( "Getting config via unc from {0}", configUri.LocalPath );
 					xmlDoc.Load( configUri.LocalPath );
 				}
 				else if( configUri.Scheme == __uriSchemeHttp )
 				{
-					this.SetLogMessage( "Getting config via http from {0}", configUri.AbsoluteUri );
-					Stream respStream = this.HttpRequestSync( configUri.AbsoluteUri );
+					SetLogMessage( "Getting config via http from {0}", configUri.AbsoluteUri );
+					Stream respStream = HttpRequestSync( configUri.AbsoluteUri );
 					if( respStream != null )
 					{
 						xmlDoc.Load( respStream );
@@ -226,8 +227,8 @@ namespace HappyBin.AutoUpdater
 				}
 				else if( configUri.Scheme == __uriSchemeFtp )
 				{
-					this.SetLogMessage( "Getting file via ftp from {0}", configUri.AbsoluteUri );
-					Stream respStream = this.FtpRequestSync( configUri.AbsoluteUri );
+					SetLogMessage( "Getting file via ftp from {0}", configUri.AbsoluteUri );
+					Stream respStream = FtpRequestSync( configUri.AbsoluteUri );
 					if( respStream != null )
 					{
 						xmlDoc.Load( respStream );
@@ -243,7 +244,7 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed to retrieve config file: {0}.", ex, configUri );
+				SetLogMessage( "Failed to retrieve config file: {0}.", ex, configUri );
 			}
 
 			return uc;
@@ -259,12 +260,12 @@ namespace HappyBin.AutoUpdater
 
 			if( !rei.Exists )
 			{
-				this.SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
+				SetLogMessage( "Could not find file {0}; aborting.", true, rei.FullPath );
 			}
 			else
 			{
-				this.SetLogMessage( "Starting installation of existing patches." );
-				this.InstallExistingPatches( rei.FullPath, rei.FolderPath );
+				SetLogMessage( "Starting installation of existing patches." );
+				InstallExistingPatches( rei.FullPath, rei.FolderPath );
 			}
 		}
 
@@ -284,22 +285,22 @@ namespace HappyBin.AutoUpdater
 				bool exited = exe.WaitForExit( waitMilliseconds );
 				if( !exited )
 				{
-					this.SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
+					SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
 					exe.Kill();
 				}
 			}
 
 			DirectoryInfo downloadFolder = new DirectoryInfo( Properties.Settings.Default.DownloadFolder );
 			List<DirectoryInfo> patchFolders = new List<DirectoryInfo>( downloadFolder.EnumerateDirectories() );
-			patchFolders.Sort( this.CompareDirectoriesByCreationTime );
+			patchFolders.Sort( CompareDirectoriesByCreationTime );
 
 			foreach( DirectoryInfo patchFolder in patchFolders )
 			{
 				foreach( FileInfo file in patchFolder.EnumerateFiles( "*.zip" ) )
 				{
 					string patchPath = file.FullName;
-					this.SetLogMessage( "Starting patch installation for {0}", patchPath );
-					this.UnzipFile( patchPath, rootUnzipPath );
+					SetLogMessage( "Starting patch installation for {0}", patchPath );
+					UnzipFile( patchPath, rootUnzipPath );
 
 					string purgeListFile = Path.Combine( Path.GetDirectoryName( patchPath ), __purgeListFileName );
 					if( File.Exists( purgeListFile ) )
@@ -310,20 +311,20 @@ namespace HappyBin.AutoUpdater
 							FileInfo p = new FileInfo( Path.Combine( rootUnzipPath, purgefile ) );
 							if( p.Exists )
 							{
-								this.TryDeleteFile( p );
+								TryDeleteFile( p );
 							}
 						}
-						this.TryDeleteFile( new FileInfo( purgeListFile ) );
+						TryDeleteFile( new FileInfo( purgeListFile ) );
 					}
 
 					//cleanup
-					this.TryDeleteFile( file );
-					this.TryDeleteDirectory( patchFolder );
+					TryDeleteFile( file );
+					TryDeleteDirectory( patchFolder );
 				}
 			}
 
 			//cleanup
-			this.TryDeleteDirectory( downloadFolder );
+			TryDeleteDirectory( downloadFolder );
 
 			if( Properties.Settings.Default.StartRuntimeExeAfterInstall )
 			{
@@ -346,26 +347,26 @@ namespace HappyBin.AutoUpdater
 			{
 				if( patchUri.IsUnc )
 				{
-					this.SetLogMessage( "Getting file via unc from {0}", patchUri.LocalPath );
+					SetLogMessage( "Getting file via unc from {0}", patchUri.LocalPath );
 					File.Copy( patchUri.LocalPath, destination );
 				}
 				else if( patchUri.Scheme == __uriSchemeHttp )
 				{
-					this.SetLogMessage( "Getting file via http from {0}", patchUri.AbsoluteUri );
-					Stream respStream = this.HttpRequestSync( patchUri.AbsoluteUri );
+					SetLogMessage( "Getting file via http from {0}", patchUri.AbsoluteUri );
+					Stream respStream = HttpRequestSync( patchUri.AbsoluteUri );
 					if( respStream != null )
 					{
-						this.WriteFile( respStream, destination );
+						WriteFile( respStream, destination );
 						respStream.Close();
 					}
 				}
 				else if( patchUri.Scheme == __uriSchemeFtp )
 				{
-					this.SetLogMessage( "Getting file via ftp from {0}", patchUri.AbsoluteUri );
-					Stream respStream = this.FtpRequestSync( patchUri.AbsoluteUri );
+					SetLogMessage( "Getting file via ftp from {0}", patchUri.AbsoluteUri );
+					Stream respStream = FtpRequestSync( patchUri.AbsoluteUri );
 					if( respStream != null )
 					{
-						this.WriteFile( respStream, destination );
+						WriteFile( respStream, destination );
 						respStream.Close();
 					}
 				}
@@ -376,10 +377,10 @@ namespace HappyBin.AutoUpdater
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed to retrieve config file: {0}.", ex, patchUri );
+				SetLogMessage( "Failed to retrieve config file: {0}.", ex, patchUri );
 			}
 
-			return this.PatchFileIsValid( destination, patchSizeBytes );
+			return PatchFileIsValid( destination, patchSizeBytes );
 		}
 
 		private bool PatchFileIsValid(string patchFilePath, long patchSizeBytes)
@@ -388,7 +389,7 @@ namespace HappyBin.AutoUpdater
 			bool isValid = fi.Exists && fi.Length == patchSizeBytes;
 			if( !isValid )
 			{
-				this.TryDeleteFile( fi );
+				TryDeleteFile( fi );
 			}
 
 			return isValid;
@@ -401,7 +402,7 @@ namespace HappyBin.AutoUpdater
 		/// <param name="outPath">Output file name</param>
 		private void WriteFile(Stream s, string outPath)
 		{
-			this.DownloadBytes = 0;
+			DownloadBytes = 0;
 			byte[] buf = new byte[4096];
 			int length;
 
@@ -410,7 +411,7 @@ namespace HappyBin.AutoUpdater
 				length = s.Read( buf, 0, 4096 );
 				while( length > 0 )
 				{
-					this.DownloadBytes += length;
+					DownloadBytes += length;
 
 					fs.Write( buf, 0, length );
 					length = s.Read( buf, 0, 4096 );
@@ -422,21 +423,21 @@ namespace HappyBin.AutoUpdater
 		{
 			try
 			{
-				this.DownloadFileName = uri;
-				this.SetLogMessage( "Downloading file via http: {0}", uri );
+				DownloadFileName = uri;
+				SetLogMessage( "Downloading file via http: {0}", uri );
 
 				HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create( uri );
 				req.Credentials = CredentialCache.DefaultCredentials;
 				HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
-				this.OnDownloadCompleted( uri );
-				this.SetLogMessage( "Download file via http  complete: {0}", uri );
+				OnDownloadCompleted( uri );
+				SetLogMessage( "Download file via http  complete: {0}", uri );
 
 				return resp.GetResponseStream();
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed on http call to: {0}.", ex, uri );
+				SetLogMessage( "Failed on http call to: {0}.", ex, uri );
 				return null;
 			}
 		}
@@ -445,74 +446,57 @@ namespace HappyBin.AutoUpdater
 		{
 			try
 			{
-				this.DownloadFileName = uri;
-				this.SetLogMessage( "Downloading file via ftp: {0}", uri );
+				DownloadFileName = uri;
+				SetLogMessage( "Downloading file via ftp: {0}", uri );
 
 				FtpWebRequest req = (FtpWebRequest)WebRequest.Create( uri );
 				req.Method = WebRequestMethods.Ftp.DownloadFile;
 				req.Credentials = CredentialCache.DefaultCredentials;
 				FtpWebResponse resp = (FtpWebResponse)req.GetResponse();
 
-				this.OnDownloadCompleted( uri );
-				this.SetLogMessage( "Download file via ftp complete: {0}", uri );
+				OnDownloadCompleted( uri );
+				SetLogMessage( "Download file via ftp complete: {0}", uri );
 
 				return resp.GetResponseStream();
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Failed on ftp call to: {0}.", ex, uri );
+				SetLogMessage( "Failed on ftp call to: {0}.", ex, uri );
 				return null;
 			}
 		}
 
-		private void UnzipFile(string zipfile, string rootUnzipPath)
-		{
-			using( ZipInputStream s = new ZipInputStream( File.OpenRead( zipfile ) ) )
-			{
-				ZipEntry theEntry;
-				while( (theEntry = s.GetNextEntry()) != null )
-				{
-					string directoryName = Path.Combine( rootUnzipPath, Path.GetDirectoryName( theEntry.Name ) );
-					string fileName = Path.GetFileName( theEntry.Name );
+        private void UnzipFile(string zipfile, string rootUnzipPath)
+        {
+            using( ZipArchive archive = ZipFile.OpenRead( zipfile ) )
+            {
+                foreach( ZipArchiveEntry entry in archive.Entries )
+                {
+                    string directoryName = Path.Combine( rootUnzipPath, Path.GetDirectoryName( entry.Name ) );
+                    string fileName = Path.GetFileName( entry.Name );
 
-					// create directory
-					if( directoryName.Length > 0 )
-					{
-						Directory.CreateDirectory( directoryName );
-					}
+                    // create directory
+                    if( directoryName.Length > 0 )
+                        Directory.CreateDirectory( directoryName );
 
-					if( fileName != String.Empty )
-					{
-						string fullFilePath = Path.Combine( rootUnzipPath, theEntry.Name );
-						if( theEntry.Name == __purgeListFileName )
-						{
-							fullFilePath = Path.Combine( Path.GetDirectoryName( zipfile ), theEntry.Name );
-						}
+                    if( fileName != String.Empty )
+                    {
+                        string fullFilePath = Path.Combine( rootUnzipPath, entry.Name );
 
-						using( FileStream streamWriter = File.Create( fullFilePath ) )
-						{
-							int size = 2048;
-							byte[] data = new byte[2048];
-							while( true )
-							{
-								size = s.Read( data, 0, data.Length );
-								if( size > 0 )
-								{
-									streamWriter.Write( data, 0, size );
-								}
-								else { break; }
-							}
-						}
+                        if( entry.Name == __purgeListFileName )
+                            fullFilePath = Path.Combine( Path.GetDirectoryName( zipfile ), entry.Name );
 
-						this.OnUnzipFileCompleted( fullFilePath );
-						this.SetLogMessage( "Unzipped file {0}", fullFilePath );
-					}
-				}
-			}
+                        entry.ExtractToFile( Path.Combine( rootUnzipPath, entry.FullName ) );
 
-			this.OnUnzipFileCompleted( zipfile );
-			this.SetLogMessage( "Completed unzip for {0}", zipfile );
-		}
+                        OnUnzipFileCompleted( fullFilePath );
+                        SetLogMessage( "Unzipped file {0}", fullFilePath );
+                    }
+                }
+            }
+
+            OnUnzipFileCompleted( zipfile );
+            SetLogMessage( "Completed unzip for {0}", zipfile );
+        }
 
 		private int CompareDirectoriesByCreationTime(DirectoryInfo x, DirectoryInfo y)
 		{
@@ -523,12 +507,12 @@ namespace HappyBin.AutoUpdater
 		{
 			try
 			{
-				this.SetLogMessage( "Removing file {0}", file.FullName );
+				SetLogMessage( "Removing file {0}", file.FullName );
 				file.Delete();
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Could not remove file {0}.", ex, file.FullName );
+				SetLogMessage( "Could not remove file {0}.", ex, file.FullName );
 			}
 		}
 
@@ -536,30 +520,30 @@ namespace HappyBin.AutoUpdater
 		{
 			try
 			{
-				this.SetLogMessage( "Removing folder {0}", dir.FullName );
+				SetLogMessage( "Removing folder {0}", dir.FullName );
 				dir.Delete();
 			}
 			catch( Exception ex )
 			{
-				this.SetLogMessage( "Could not remove folder {0}.", ex, dir.FullName );
+				SetLogMessage( "Could not remove folder {0}.", ex, dir.FullName );
 			}
 		}
 
 		private void SetLogMessage(string format, params object[] args)
 		{
-			this.LogMessage = new LogMessage( format, args );
+			LogMessage = new LogMessage( format, args );
 		}
 
 		private void SetLogMessage(string format, bool isError, params object[] args)
 		{
 			LogMessage l = new LogMessage( format, args );
 			l.IsError = isError;
-			this.LogMessage = l;
+			LogMessage = l;
 		}
 
 		private void SetLogMessage(string format, Exception ex, params object[] args)
 		{
-			this.LogMessage = new LogMessage( format, ex, args );
+			LogMessage = new LogMessage( format, ex, args );
 		}
 		#endregion
 	}
