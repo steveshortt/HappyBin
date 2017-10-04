@@ -1,71 +1,64 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
+
 using HappyBin.AutoUpdater;
 
 namespace HappyBinCli
 {
-	class Program
-	{
-		static Updater _updater = new Updater();
-		static bool _isWorking = false;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            new UpdaterWrapper().RunUpdate();
+        }
+    }
 
-		static void Main(string[] args)
-		{
-			_updater.PropertyChanged += new PropertyChangedEventHandler( updater_PropertyChanged );
-			_updater.InitializePatchStatus();
+    class UpdaterWrapper
+    {
+        Updater _updater = new Updater();
+        bool _isWorking = false;
 
-			if( _updater.Status.PatchIsValid )
-			{
-				if( _updater.Status.PatchIsMandatory )
-				{
-					_isWorking = true;
-					InstallPatchesAsync();
-				}
-				else
-				{
-					Console.Write( "An update is available and ready to install.  Would you like to install now? " );
-					char response = Convert.ToChar( Console.Read() );
-					if( response == 'y' )
-					{
-						_isWorking = true;
-						InstallPatchesAsync();
-					}
-				}
-			}
-			else
-			{
-				_updater = null;
-			}
+        public async void RunUpdate()
+        {
+            _updater.PropertyChanged += new PropertyChangedEventHandler( updater_PropertyChanged );
+            _updater.InitializePatchStatus();
 
-			while( _isWorking )
-			{
-				System.Threading.Thread.Sleep( 100 );
-			}
-		}
+            if( _updater.Status.PatchIsValid )
+                if( _updater.Status.PatchIsMandatory )
+                {
+                    _isWorking = true;
+                    await InstallPatchesAsync();
+                }
+                else
+                {
+                    Console.Write( "An update is available and ready to install.  Would you like to install now? " );
+                    char response = Convert.ToChar( Console.Read() );
+                    if( response == 'y' )
+                    {
+                        _isWorking = true;
+                        await InstallPatchesAsync();
+                    }
+                }
+            else
+                _updater = null;
 
-		static void InstallPatchesAsync()
-		{
-			BackgroundWorker w = new BackgroundWorker();
+            while( _isWorking ) { System.Threading.Thread.Sleep( 100 ); }
 
-			w.DoWork += (s, v) =>
-			{
-				_updater.InstallExistingPatches( _updater.Status.ExeInfo.Name, _updater.Status.ExeInfo.FolderPath );
-			};
+            Console.WriteLine( "done" );
+        }
 
-			w.RunWorkerCompleted += (s, v) =>
-			{
-				_isWorking = false;
-			};
+        Task InstallPatchesAsync()
+        {
+            _updater.InstallExistingPatches( _updater.Status.ExeInfo.Name, _updater.Status.ExeInfo.FolderPath );
+            _isWorking = false;
+            return null;
+        }
 
-			w.RunWorkerAsync();
-		}
-
-		static void updater_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if( e.PropertyName == "LogMessage" )
-			{
-				Console.WriteLine( "{0}\t{1}\r\n", _updater.LogMessage.TimeStamp, _updater.LogMessage.Message );
-			}
-		}
-	}
+        void updater_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if( e.PropertyName == "LogMessage" )
+                Console.WriteLine( "{0}\t{1}", _updater.LogMessage.TimeStamp, _updater.LogMessage.Message );
+        }
+    }
 }

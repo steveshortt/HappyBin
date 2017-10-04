@@ -472,7 +472,7 @@ namespace HappyBin.AutoUpdater
             {
                 foreach( ZipArchiveEntry entry in archive.Entries )
                 {
-                    string directoryName = Path.Combine( rootUnzipPath, Path.GetDirectoryName( entry.Name ) );
+                    string directoryName = Path.Combine( rootUnzipPath, Path.GetDirectoryName( entry.FullName ) );
                     string fileName = Path.GetFileName( entry.Name );
 
                     // create directory

@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HappyBin.AutoUpdater</RootNamespace>
-    <AssemblyName>HappyBin.AutoUpdater</AssemblyName>
+    <AssemblyName>HappyBin.AutoUpdater.App</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
