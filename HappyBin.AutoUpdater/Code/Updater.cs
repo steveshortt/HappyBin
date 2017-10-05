@@ -484,7 +484,7 @@ namespace HappyBin.AutoUpdater
                         if( entry.Name == __purgeListFileName )
                             fullFilePath = Path.Combine( Path.GetDirectoryName( zipfile ), entry.Name );
 
-                        entry.ExtractToFile( Path.Combine( rootUnzipPath, entry.FullName ) );
+                        entry.ExtractToFile( Path.Combine( rootUnzipPath, entry.FullName ), overwrite: true );
 
                         OnUnzipFileCompleted( fullFilePath );
                         SetLogMessage( "Unzipped file {0}", fullFilePath );
