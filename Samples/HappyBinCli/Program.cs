@@ -8,54 +8,36 @@ namespace HappyBinCli
 {
     class Program
     {
+        static Updater _updater = new Updater();
+
         static void Main(string[] args)
         {
-            new UpdaterWrapper().RunUpdate();
-        }
-    }
-
-    class UpdaterWrapper
-    {
-        Updater _updater = new Updater();
-        bool _isWorking = false;
-
-        public async void RunUpdate()
-        {
             _updater.PropertyChanged += new PropertyChangedEventHandler( updater_PropertyChanged );
+
             _updater.InitializePatchStatus();
 
+            bool runUpdate = false;
             if( _updater.Status.PatchIsValid )
-                if( _updater.Status.PatchIsMandatory )
-                {
-                    _isWorking = true;
-                    await InstallPatchesAsync();
-                }
-                else
+                if( !_updater.Status.PatchIsMandatory )
                 {
                     Console.Write( "An update is available and ready to install.  Would you like to install now? " );
                     char response = Convert.ToChar( Console.Read() );
-                    if( response == 'y' )
-                    {
-                        _isWorking = true;
-                        await InstallPatchesAsync();
-                    }
+                    runUpdate = response == 'y';
                 }
-            else
-                _updater = null;
+                else
+                    runUpdate = true;
 
-            while( _isWorking ) { System.Threading.Thread.Sleep( 100 ); }
+            if( runUpdate )
+                Task.Run( () =>
+                {
+                    _updater.InstallExistingPatches( _updater.Status.ExeInfo.Name, _updater.Status.ExeInfo.FolderPath );
+                } ).Wait();
 
-            Console.WriteLine( "done" );
+
+            Console.WriteLine( "Update complete." );
         }
 
-        Task InstallPatchesAsync()
-        {
-            _updater.InstallExistingPatches( _updater.Status.ExeInfo.Name, _updater.Status.ExeInfo.FolderPath );
-            _isWorking = false;
-            return null;
-        }
-
-        void updater_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        static void updater_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if( e.PropertyName == "LogMessage" )
                 Console.WriteLine( "{0}\t{1}", _updater.LogMessage.TimeStamp, _updater.LogMessage.Message );
