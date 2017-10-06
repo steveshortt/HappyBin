@@ -42,25 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\EventArgs.cs" />
-    <Compile Include="Code\LogMessage.cs" />
-    <Compile Include="Code\PatchStatus.cs" />
-    <Compile Include="Code\RuntimeExeInfo.cs" />
-    <Compile Include="Code\UpdateConfig.cs" />
-    <Compile Include="Code\Updater.cs" />
+    <Compile Include="Classes\EventArgs.cs" />
+    <Compile Include="Classes\LogMessage.cs" />
+    <Compile Include="Classes\PatchStatus.cs" />
+    <Compile Include="Classes\RuntimeExeInfo.cs" />
+    <Compile Include="Classes\UpdateConfig.cs" />
+    <Compile Include="Classes\Updater.cs" />
+    <Compile Include="Classes\UpdaterSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File $(SolutionDir)scripts\setVersion.ps1 -path $(ProjectDir)Properties\AssemblyInfo.cs -versionFile $(SolutionDir)scripts\AssemblyInfo.xml</PreBuildEvent>
+  </PropertyGroup>
 </Project>

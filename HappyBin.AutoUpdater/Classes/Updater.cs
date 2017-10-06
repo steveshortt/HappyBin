@@ -18,6 +18,15 @@ namespace HappyBin.AutoUpdater
         const string __uriSchemeFtp = "ftp";
         const string __purgeListFileName = "purge.txt";
 
+        UpdaterSettings _settings = null;
+
+
+        public Updater(UpdaterSettings settings)
+        {
+            _settings = settings;
+        }
+
+
         #region friendly ui stuff
         #region public events
         public event PropertyChangedEventHandler PropertyChanged;
@@ -145,7 +154,7 @@ namespace HappyBin.AutoUpdater
             Status = result;
 
             //assemble accurate path and file names, check for exe existence, bail if not present
-            RuntimeExeInfo rei = new RuntimeExeInfo( Properties.Settings.Default.RuntimeExe );
+            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.ProcessName );
             result.ExeInfo = rei;
 
             if( !rei.Exists )
@@ -169,7 +178,7 @@ namespace HappyBin.AutoUpdater
                 }
 
                 #region ensure patch folders exist
-                string downloadFolderRoot = Properties.Settings.Default.DownloadFolder;
+                string downloadFolderRoot = _settings.DownloadFolder;
                 if( !Directory.Exists( downloadFolderRoot ) )
                 {
                     Directory.CreateDirectory( downloadFolderRoot );
@@ -203,7 +212,7 @@ namespace HappyBin.AutoUpdater
         /// <returns>The initialized UpdateConfig.  Values will be empty if the a load failure occurs.</returns>
         public UpdateConfig LoadConfig()
         {
-            Uri configUri = new Uri( Properties.Settings.Default.UpdateConfigUri );
+            Uri configUri = new Uri( _settings.UpdateConfigUri );
             UpdateConfig uc = new UpdateConfig();
 
             try
@@ -256,7 +265,7 @@ namespace HappyBin.AutoUpdater
         public void InstallExistingPatches()
         {
             //assemble accurate path and file names, check for exe existence, bail if not present
-            RuntimeExeInfo rei = new RuntimeExeInfo( Properties.Settings.Default.RuntimeExe );
+            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.ProcessName );
 
             if( !rei.Exists )
             {
@@ -276,7 +285,7 @@ namespace HappyBin.AutoUpdater
         /// <param name="rootUnzipPath">Root path where files will be unzipped</param>
         public void InstallExistingPatches(string processName, string rootUnzipPath)
         {
-            int waitMilliseconds = Properties.Settings.Default.WaitForExitMillseconds;
+            int waitMilliseconds = _settings.WaitForExitMillseconds;
 
             Process[] currExe = Process.GetProcessesByName( Path.GetFileNameWithoutExtension( processName ) );
             foreach( Process exe in currExe )
@@ -290,7 +299,7 @@ namespace HappyBin.AutoUpdater
                 }
             }
 
-            DirectoryInfo downloadFolder = new DirectoryInfo( Properties.Settings.Default.DownloadFolder );
+            DirectoryInfo downloadFolder = new DirectoryInfo( _settings.DownloadFolder );
             List<DirectoryInfo> patchFolders = new List<DirectoryInfo>( downloadFolder.EnumerateDirectories() );
             patchFolders.Sort( CompareDirectoriesByCreationTime );
 
@@ -326,8 +335,10 @@ namespace HappyBin.AutoUpdater
             //cleanup
             TryDeleteDirectory( downloadFolder );
 
-            if( Properties.Settings.Default.StartRuntimeExeAfterInstall )
-                Process.Start( processName );
+            if( _settings.StartProcessAfterInstall )
+            {
+                Process p =                 Process.Start( processName );
+            }
         }
         #endregion
 

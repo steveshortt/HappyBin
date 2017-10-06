@@ -25,24 +25,6 @@ namespace HappyBinCli.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:57575/updates/console/updateconfig.xml")]
-        public string UpdateConfigUri {
-            get {
-                return ((string)(this["UpdateConfigUri"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ConsoleHappyBinSample.exe")]
-        public string RuntimeExe {
-            get {
-                return ((string)(this["RuntimeExe"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("patches")]
         public string DownloadFolder {
             get {
@@ -62,9 +44,37 @@ namespace HappyBinCli.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool StartRuntimeExeAfterInstall {
+        public bool StartProcessAfterInstall {
             get {
-                return ((bool)(this["StartRuntimeExeAfterInstall"]));
+                return ((bool)(this["StartProcessAfterInstall"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Process")]
+        public global::HappyBin.AutoUpdater.ProcessType ProcessType {
+            get {
+                return ((global::HappyBin.AutoUpdater.ProcessType)(this["ProcessType"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\LAPTOP-TK2D9TB6\\c$\\Devo\\HappyBin\\Samples\\HappyBinCli\\bin\\Debug\\updates\\updateco" +
+            "nfig.xml")]
+        public string UpdateConfigUri {
+            get {
+                return ((string)(this["UpdateConfigUri"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("write.exe")]
+        public string ProcessName {
+            get {
+                return ((string)(this["ProcessName"]));
             }
         }
     }

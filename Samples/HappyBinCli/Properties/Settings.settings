@@ -2,20 +2,23 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HappyBinCli.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="UpdateConfigUri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://localhost:57575/updates/console/updateconfig.xml</Value>
-    </Setting>
-    <Setting Name="RuntimeExe" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ConsoleHappyBinSample.exe</Value>
-    </Setting>
     <Setting Name="DownloadFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)">patches</Value>
     </Setting>
     <Setting Name="WaitForExitMillseconds" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">3000</Value>
     </Setting>
-    <Setting Name="StartRuntimeExeAfterInstall" Type="System.Boolean" Scope="Application">
+    <Setting Name="StartProcessAfterInstall" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ProcessType" Type="HappyBin.AutoUpdater.ProcessType" Scope="Application">
+      <Value Profile="(Default)">Process</Value>
+    </Setting>
+    <Setting Name="UpdateConfigUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\LAPTOP-TK2D9TB6\c$\Devo\HappyBin\Samples\HappyBinCli\bin\Debug\updates\updateconfig.xml</Value>
+    </Setting>
+    <Setting Name="ProcessName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">write.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

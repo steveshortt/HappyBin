@@ -4,14 +4,25 @@ using System.Threading.Tasks;
 
 using HappyBin.AutoUpdater;
 
+using settings = HappyBinCli.Properties.Settings;
+
 namespace HappyBinCli
 {
     class Program
     {
-        static Updater _updater = new Updater();
+        static Updater _updater = null;
 
         static void Main(string[] args)
         {
+            _updater = new Updater( new UpdaterSettings()
+            {
+                DownloadFolder = settings.Default.DownloadFolder,
+                ProcessName = settings.Default.ProcessName,
+                ProcessType = settings.Default.ProcessType,
+                StartProcessAfterInstall = settings.Default.StartProcessAfterInstall,
+                UpdateConfigUri = settings.Default.UpdateConfigUri,
+                WaitForExitMillseconds = settings.Default.WaitForExitMillseconds
+            } );
             _updater.PropertyChanged += new PropertyChangedEventHandler( updater_PropertyChanged );
 
             _updater.InitializePatchStatus();
