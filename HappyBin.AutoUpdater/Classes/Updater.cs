@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.ServiceProcess;
 using System.Xml;
 
 //using ICSharpCode.SharpZipLib.Zip;
@@ -286,18 +287,45 @@ namespace HappyBin.AutoUpdater
         public void InstallExistingPatches(string processName, string rootUnzipPath)
         {
             int waitMilliseconds = _settings.WaitForExitMillseconds;
-
-            Process[] currExe = Process.GetProcessesByName( Path.GetFileNameWithoutExtension( processName ) );
-            foreach( Process exe in currExe )
+            bool ok = false;
+            try
             {
-                exe.CloseMainWindow();
-                bool exited = exe.WaitForExit( waitMilliseconds );
-                if( !exited )
+                if( _settings.ProcessType == ProcessType.Process )
                 {
-                    SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
-                    exe.Kill();
+                    Process[] currExe = Process.GetProcessesByName( Path.GetFileNameWithoutExtension( processName ) );
+                    foreach( Process exe in currExe )
+                    {
+                        exe.CloseMainWindow();
+                        bool exited = exe.WaitForExit( waitMilliseconds );
+                        if( !exited )
+                        {
+                            SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
+                            exe.Kill();
+                        }
+                    }
                 }
+                else
+                {
+                    ServiceController sc = new ServiceController( processName );
+                    Console.WriteLine( $"The {processName} service status is currently set to {0}", sc.Status.ToString() );
+
+                    if( !((sc.Status.Equals( ServiceControllerStatus.Stopped )) || (sc.Status.Equals( ServiceControllerStatus.StopPending ))) )
+                    {
+                        Console.WriteLine( $"Stopping the {processName} service..." );
+                        sc.Stop();
+                        sc.WaitForStatus( ServiceControllerStatus.Stopped, new TimeSpan( 0, 0, 0, 0, waitMilliseconds ) );
+                    }
+                }
+
+                ok = true;
             }
+            catch( Exception ex )
+            {
+                SetLogMessage( $"Could not stop process: {processName}.  Message: {ex.Message}  Aborting." );
+            }
+
+            if( !ok )
+                return;
 
             DirectoryInfo downloadFolder = new DirectoryInfo( _settings.DownloadFolder );
             List<DirectoryInfo> patchFolders = new List<DirectoryInfo>( downloadFolder.EnumerateDirectories() );
@@ -336,9 +364,28 @@ namespace HappyBin.AutoUpdater
             TryDeleteDirectory( downloadFolder );
 
             if( _settings.StartProcessAfterInstall )
-            {
-                Process p =                 Process.Start( processName );
-            }
+                try
+                {
+                    if( _settings.ProcessType == ProcessType.Process )
+                    {
+                        Process.Start( processName );
+                    }
+                    else
+                    {
+                        ServiceController sc = new ServiceController( processName );
+                        Console.WriteLine( $"The {processName} service status is currently set to {0}", sc.Status.ToString() );
+
+                        if( !((sc.Status.Equals( ServiceControllerStatus.StartPending )) || (sc.Status.Equals( ServiceControllerStatus.Running ))) )
+                        {
+                            Console.WriteLine( $"Starting the {processName} service..." );
+                            sc.Start();
+                        }
+                    }
+                }
+                catch( Exception ex )
+                {
+                    SetLogMessage( $"Error restarting process: {processName}.  Message: {ex.Message}" );
+                }
         }
         #endregion
 
