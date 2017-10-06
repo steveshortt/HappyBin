@@ -11,14 +11,14 @@
     <Setting Name="StartProcessAfterInstall" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ProcessType" Type="HappyBin.AutoUpdater.ProcessType" Scope="Application">
-      <Value Profile="(Default)">Process</Value>
-    </Setting>
     <Setting Name="UpdateConfigUri" Type="System.String" Scope="Application">
       <Value Profile="(Default)">\\LAPTOP-TK2D9TB6\c$\Devo\HappyBin\Samples\HappyBinCli\bin\Debug\updates\updateconfig.xml</Value>
     </Setting>
     <Setting Name="ProcessName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">write.exe</Value>
+    </Setting>
+    <Setting Name="ServiceName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">W32Time</Value>
     </Setting>
   </Settings>
 </SettingsFile>

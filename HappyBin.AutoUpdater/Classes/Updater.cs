@@ -155,7 +155,7 @@ namespace HappyBin.AutoUpdater
             Status = result;
 
             //assemble accurate path and file names, check for exe existence, bail if not present
-            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.ProcessName );
+            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.RuntimeExe );
             result.ExeInfo = rei;
 
             if( !rei.Exists )
@@ -266,7 +266,7 @@ namespace HappyBin.AutoUpdater
         public void InstallExistingPatches()
         {
             //assemble accurate path and file names, check for exe existence, bail if not present
-            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.ProcessName );
+            RuntimeExeInfo rei = new RuntimeExeInfo( _settings.RuntimeExe );
 
             if( !rei.Exists )
             {
@@ -286,45 +286,7 @@ namespace HappyBin.AutoUpdater
         /// <param name="rootUnzipPath">Root path where files will be unzipped</param>
         public void InstallExistingPatches(string processName, string rootUnzipPath)
         {
-            int waitMilliseconds = _settings.WaitForExitMillseconds;
-            bool ok = false;
-            try
-            {
-                if( _settings.ProcessType == ProcessType.Process )
-                {
-                    Process[] currExe = Process.GetProcessesByName( Path.GetFileNameWithoutExtension( processName ) );
-                    foreach( Process exe in currExe )
-                    {
-                        exe.CloseMainWindow();
-                        bool exited = exe.WaitForExit( waitMilliseconds );
-                        if( !exited )
-                        {
-                            SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
-                            exe.Kill();
-                        }
-                    }
-                }
-                else
-                {
-                    ServiceController sc = new ServiceController( processName );
-                    Console.WriteLine( $"The {processName} service status is currently set to {0}", sc.Status.ToString() );
-
-                    if( !((sc.Status.Equals( ServiceControllerStatus.Stopped )) || (sc.Status.Equals( ServiceControllerStatus.StopPending ))) )
-                    {
-                        Console.WriteLine( $"Stopping the {processName} service..." );
-                        sc.Stop();
-                        sc.WaitForStatus( ServiceControllerStatus.Stopped, new TimeSpan( 0, 0, 0, 0, waitMilliseconds ) );
-                    }
-                }
-
-                ok = true;
-            }
-            catch( Exception ex )
-            {
-                SetLogMessage( $"Could not stop process: {processName}.  Message: {ex.Message}  Aborting." );
-            }
-
-            if( !ok )
+            if( !TryStopProcessOrService( processName ) )
                 return;
 
             DirectoryInfo downloadFolder = new DirectoryInfo( _settings.DownloadFolder );
@@ -347,9 +309,7 @@ namespace HappyBin.AutoUpdater
                         {
                             FileInfo p = new FileInfo( Path.Combine( rootUnzipPath, purgefile ) );
                             if( p.Exists )
-                            {
                                 TryDeleteFile( p );
-                            }
                         }
                         TryDeleteFile( new FileInfo( purgeListFile ) );
                     }
@@ -364,33 +324,86 @@ namespace HappyBin.AutoUpdater
             TryDeleteDirectory( downloadFolder );
 
             if( _settings.StartProcessAfterInstall )
-                try
-                {
-                    if( _settings.ProcessType == ProcessType.Process )
-                    {
-                        Process.Start( processName );
-                    }
-                    else
-                    {
-                        ServiceController sc = new ServiceController( processName );
-                        Console.WriteLine( $"The {processName} service status is currently set to {0}", sc.Status.ToString() );
-
-                        if( !((sc.Status.Equals( ServiceControllerStatus.StartPending )) || (sc.Status.Equals( ServiceControllerStatus.Running ))) )
-                        {
-                            Console.WriteLine( $"Starting the {processName} service..." );
-                            sc.Start();
-                        }
-                    }
-                }
-                catch( Exception ex )
-                {
-                    SetLogMessage( $"Error restarting process: {processName}.  Message: {ex.Message}" );
-                }
+                TryStartProcessOrService( processName );
         }
         #endregion
 
 
         #region private methods
+        bool TryStopProcessOrService(string processName)
+        {
+            int waitMilliseconds = _settings.WaitForExitMillseconds;
+            bool ok = false;
+            try
+            {
+                if( !_settings.IsService )
+                {
+                    Process[] currExe = Process.GetProcessesByName( Path.GetFileNameWithoutExtension( processName ) );
+                    foreach( Process exe in currExe )
+                    {
+                        exe.CloseMainWindow();
+                        bool exited = exe.WaitForExit( waitMilliseconds );
+                        if( !exited )
+                        {
+                            SetLogMessage( "Killing process: {0} PId:({1})", exe.ProcessName, exe.Id );
+                            exe.Kill();
+                        }
+                    }
+                }
+                else
+                {
+                    processName = _settings.ServiceName;
+                    ServiceController sc = new ServiceController( processName );
+                    SetLogMessage( $"The {processName} service status is currently set to {sc.Status}." );
+
+                    if( !((sc.Status.Equals( ServiceControllerStatus.Stopped )) || (sc.Status.Equals( ServiceControllerStatus.StopPending ))) )
+                    {
+                        SetLogMessage( $"Stopping the {processName} service..." );
+                        sc.Stop();
+                        sc.WaitForStatus( ServiceControllerStatus.Stopped, new TimeSpan( 0, 0, 0, 0, waitMilliseconds ) );
+                        SetLogMessage( $"The {processName} service status is currently set to {sc.Status}." );
+                    }
+                }
+
+                ok = true;
+            }
+            catch( Exception ex )
+            {
+                SetLogMessage( $"Could not stop process: {processName}.  Message: {ex.Message}  Aborting." );
+            }
+
+            return ok;
+        }
+
+        void TryStartProcessOrService(string processName)
+        {
+            try
+            {
+                if( !_settings.IsService )
+                {
+                    Process.Start( processName );
+                }
+                else
+                {
+                    processName = _settings.ServiceName;
+                    ServiceController sc = new ServiceController( processName );
+                    SetLogMessage( $"The {processName} service status is currently set to {sc.Status}." );
+
+                    if( !((sc.Status.Equals( ServiceControllerStatus.StartPending )) || (sc.Status.Equals( ServiceControllerStatus.Running ))) )
+                    {
+                        SetLogMessage( $"Starting the {processName} service..." );
+                        sc.Start();
+                        sc.WaitForStatus( ServiceControllerStatus.Running, new TimeSpan( 0, 0, 2, 0, 0 ) );
+                        SetLogMessage( $"The {processName} service status is currently set to {sc.Status}." );
+                    }
+                }
+            }
+            catch( Exception ex )
+            {
+                SetLogMessage( $"Error restarting process: {processName}.  Message: {ex.Message}" );
+            }
+        }
+
         /// <summary>
         /// Downloads or copies the patch file from web or unc
         /// </summary>

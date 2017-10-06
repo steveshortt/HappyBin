@@ -52,15 +52,6 @@ namespace HappyBinCli.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Process")]
-        public global::HappyBin.AutoUpdater.ProcessType ProcessType {
-            get {
-                return ((global::HappyBin.AutoUpdater.ProcessType)(this["ProcessType"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\LAPTOP-TK2D9TB6\\c$\\Devo\\HappyBin\\Samples\\HappyBinCli\\bin\\Debug\\updates\\updateco" +
             "nfig.xml")]
         public string UpdateConfigUri {
@@ -75,6 +66,15 @@ namespace HappyBinCli.Properties {
         public string ProcessName {
             get {
                 return ((string)(this["ProcessName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("W32Time")]
+        public string ServiceName {
+            get {
+                return ((string)(this["ServiceName"]));
             }
         }
     }
