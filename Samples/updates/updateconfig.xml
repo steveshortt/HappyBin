@@ -1,0 +1,7 @@
+<UpdateConfig>
+  <CurrentVersion>10.2.3.4</CurrentVersion>
+  <IsMandatory>false</IsMandatory>
+  <LastMandatoryVersion>1.2.3.0</LastMandatoryVersion>
+  <PatchUri>\\LAPTOP-TK2D9TB6\c$\Devo\HappyBin\Samples\updates\write.zip</PatchUri>
+  <PatchSizeBytes>4826</PatchSizeBytes>
+</UpdateConfig>
