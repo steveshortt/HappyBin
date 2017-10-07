@@ -25,7 +25,7 @@ namespace HappyBin.AutoUpdater.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:57575/updates/updateconfig.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\LAPTOP-TK2D9TB6\\c$\\Devo\\HappyBin\\Samples\\updates\\updateconfig.xml")]
         public string UpdateConfigUri {
             get {
                 return ((string)(this["UpdateConfigUri"]));
@@ -34,7 +34,7 @@ namespace HappyBin.AutoUpdater.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("foopad.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("write.exe")]
         public string RuntimeExe {
             get {
                 return ((string)(this["RuntimeExe"]));
@@ -62,9 +62,18 @@ namespace HappyBin.AutoUpdater.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool StartRuntimeExeAfterInstall {
+        public bool StartProcessAfterInstall {
             get {
-                return ((bool)(this["StartRuntimeExeAfterInstall"]));
+                return ((bool)(this["StartProcessAfterInstall"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("W32Time")]
+        public string ServiceName {
+            get {
+                return ((string)(this["ServiceName"]));
             }
         }
     }

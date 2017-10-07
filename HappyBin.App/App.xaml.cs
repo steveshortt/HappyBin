@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Windows;
+using settings = HappyBin.AutoUpdater.Properties.Settings;
 
 namespace HappyBin.AutoUpdater
 {
@@ -17,7 +14,16 @@ namespace HappyBin.AutoUpdater
         {
             base.OnStartup( e );
 
-            Updater = new Updater( null );
+            Updater = new Updater( new UpdaterSettings()
+            {
+                DownloadFolder = settings.Default.DownloadFolder,
+                RuntimeExe = settings.Default.RuntimeExe,
+                ServiceName = settings.Default.ServiceName,
+                StartProcessAfterInstall = settings.Default.StartProcessAfterInstall,
+                UpdateConfigUri = settings.Default.UpdateConfigUri,
+                WaitForExitMillseconds = settings.Default.WaitForExitMillseconds
+            } );
+
             _mainDlg = new MainDlg();
 
             Updater.IsAboutBox = false;  //just being explicit

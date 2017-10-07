@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="UpdateConfigUri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://localhost:57575/updates/updateconfig.xml</Value>
+      <Value Profile="(Default)">\\LAPTOP-TK2D9TB6\c$\Devo\HappyBin\Samples\updates\updateconfig.xml</Value>
     </Setting>
     <Setting Name="RuntimeExe" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">foopad.exe</Value>
+      <Value Profile="(Default)">write.exe</Value>
     </Setting>
     <Setting Name="DownloadFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)">patches</Value>
@@ -14,8 +14,11 @@
     <Setting Name="WaitForExitMillseconds" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">3000</Value>
     </Setting>
-    <Setting Name="StartRuntimeExeAfterInstall" Type="System.Boolean" Scope="Application">
+    <Setting Name="StartProcessAfterInstall" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ServiceName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">W32Time</Value>
     </Setting>
   </Settings>
 </SettingsFile>

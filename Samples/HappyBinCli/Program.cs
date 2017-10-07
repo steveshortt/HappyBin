@@ -17,7 +17,7 @@ namespace HappyBinCli
             _updater = new Updater( new UpdaterSettings()
             {
                 DownloadFolder = settings.Default.DownloadFolder,
-                RuntimeExe = settings.Default.ProcessName,
+                RuntimeExe = settings.Default.RuntimeExe,
                 ServiceName = settings.Default.ServiceName,
                 StartProcessAfterInstall = settings.Default.StartProcessAfterInstall,
                 UpdateConfigUri = settings.Default.UpdateConfigUri,
