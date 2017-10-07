@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "HappyBin AutoUpdater" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Simple .NET auto-updater for patching applications." )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Mekhano Group, LLC" )]
-[assembly: AssemblyProduct( "HappyBin AutoUpdater" )]
-[assembly: AssemblyCopyright( "Copyright ©  2013" )]
+[assembly: AssemblyCompany( "" )]
+[assembly: AssemblyProduct( "HappyBin.AutoUpdater" )]
+[assembly: AssemblyCopyright( "Copyright © Steve Shortt, 2017" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -53,4 +53,4 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( "1.0.0.0" )]
+[assembly: AssemblyFileVersion( "1.0.17279.0" )]
